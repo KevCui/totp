@@ -25,12 +25,12 @@ chmod +x ./totp
 ## Main Code
 
 ```bash
-mac=$(printf %016X "$(( ($(date +%s)) / 30))" \
+mac=$(printf "%016X" "$(( ($(date +%s)) / 30))" \
     | xxd -r -p \
     | openssl sha1 -binary -hmac "$(base32 -d <<< "${1^^}")" \
     | xxd -p)
 offset="$(( 16#"${mac:39:1}" * 2))"
-printf '%06d\n' "$(( (0x${mac:offset:8} & 0x7FFFFFFF) % 1000000 ))"
+printf "%06d\n" "$(( (0x${mac:offset:8} & 0x7FFFFFFF) % 1000000 ))"
 ```
 
 ## Example
