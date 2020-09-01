@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# Yet another minimal TOTP generator
+#
+#/ Usage:
+#/   ./totp <secret>
+
+digest=$(printf %016X "$(( ($(date +%s)) / 30))" \
+    | xxd -r -p \
+    | openssl sha1 -hmac "$(base32 -d <<< "${1^^}")" \
+    | cut -d' ' -f2)
+start="$(( 16#"${digest:39:1}" * 2))"
+printf '%06d\n' "$(( (0x${digest:start:8} & 0x7FFFFFFF) % 1000000 ))"
