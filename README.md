@@ -27,7 +27,7 @@ chmod +x ./totp
 ```bash
 mac=$(printf "%016X" "$(( ($(date +%s)) / 30))" \
     | xxd -r -p \
-    | openssl sha1 -binary -hmac "$(base32 -d <<< "${1^^}")" \
+    | openssl sha1 -binary -mac hmac -macopt "hexkey:"$(base32 -d <<< "${1^^}" | xxd -p)"" \
     | xxd -p)
 offset="$(( 16#"${mac:39:1}" * 2))"
 printf "%06d\n" "$(( (0x${mac:offset:8} & 0x7FFFFFFF) % 1000000 ))"
