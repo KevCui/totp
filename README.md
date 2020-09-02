@@ -25,9 +25,13 @@ chmod +x ./totp
 ## Main Code
 
 ```bash
+secret="${1^^}$(printf "%$(( (8-${#1}) % 8))s" | tr " " "=")"
+key="$(base32 -d <<< "$secret" \
+    | xxd -p \
+    | tr -cd 0-9A-Fa-f)"
 mac=$(printf "%016X" "$(( ($(date +%s)) / 30))" \
     | xxd -r -p \
-    | openssl sha1 -binary -mac hmac -macopt "hexkey:"$(base32 -d <<< "${1^^}" | xxd -p)"" \
+    | openssl sha1 -binary -mac hmac -macopt "hexkey:$key" \
     | xxd -p)
 offset="$(( 16#"${mac:39:1}" * 2))"
 printf "%06d\n" "$(( (0x${mac:offset:8} & 0x7FFFFFFF) % 1000000 ))"
