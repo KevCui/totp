@@ -25,7 +25,7 @@ chmod +x ./totp
 ## Main Code
 
 ```bash
-secret="${1^^}$(printf "%$(( (8-${#1}) % 8))s" | tr " " "=")"
+secret="${1^^}$(printf "%$(( (8-${#1}) % 8 ))s" | tr " " "=")"
 key="$(base32 -d <<< "$secret" \
     | xxd -p \
     | tr -cd 0-9A-Fa-f)"
