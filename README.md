@@ -39,9 +39,18 @@ printf "%06d\n" "$(( (0x${mac:offset:8} & 0x7FFFFFFF) % 1000000 ))"
 
 ## Example
 
+- Generate TOTP with secret string:
+
 ```bash
 ~$ ./totp ZYTYYE5FOAGW5ML7LRWUL4WTZLNJAMZS
 388841
+```
+
+- To better protect secret, combine with [secret-vault](https://github.com/KevCui/secret-vault) to generate TOTP:
+
+```bash
+~$ ./totp "$(vault.sh -k totp_secret)"
+300597
 ```
 
 ## Credits
